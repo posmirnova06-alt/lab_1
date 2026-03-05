@@ -30,7 +30,7 @@ static void double_copy(const void* source, void* destination)
     *(int*)destination = *(const double*)source;
 }
 
-FieldInfo* get_double_field_info() 
+const FieldInfo* get_double_field_info() 
 {
     if(!DOUBLE_FIELD_INFO)
     {
@@ -40,6 +40,8 @@ FieldInfo* get_double_field_info()
         DOUBLE_FIELD_INFO->mul = double_mul;
         DOUBLE_FIELD_INFO->print = double_print;
         DOUBLE_FIELD_INFO->zero = double_zero;
+        DOUBLE_FIELD_INFO->copy = double_copy;
+
     }
     return DOUBLE_FIELD_INFO;
 }

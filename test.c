@@ -134,7 +134,7 @@ static int test_transpose()
     return result;
 }
 
-static int test_row_combination()
+static int test_row_add_combination()
 {
     Matrix* m = create_matrix(2, 3, get_double_field_info());
 
@@ -168,7 +168,7 @@ int main()
     if (test_mul_int()) passed++; else printf("test_mul_int failed\n");
     if (test_mul_double()) passed++; else printf("test_mul_double failed\n");
     if (test_transpose()) passed++; else printf("test_transpose failed\n");
-    if (test_row_add_combination()) passed++; else printf("test_row_combination failed\n");
+    if (test_row_add_combination()) passed++; else printf("test_row_add_combination failed\n");
 
     printf("Tests passed: %d/%d\n", passed, total);
 

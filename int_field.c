@@ -29,7 +29,7 @@ static void int_copy(const void* source, void* destination)
     *(int*)destination = *(const int*)source;
 }
 
-FieldInfo* get_int_field_info() 
+const FieldInfo* get_int_field_info() 
 {
     if(!INT_FIELD_INFO)
     {
