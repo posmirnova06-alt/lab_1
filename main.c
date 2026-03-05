@@ -7,19 +7,18 @@ static void fill_matrix(Matrix* m)
 {
     if (!m) return;
 
-    printf("ВВЕДИТЕ ЭЛЕМЕНТЫ (%zu x %zu):\n", m -> rows, m -> cols);
+    printf("ВВЕДИТЕ ЭЛЕМЕНТЫ (%zu x %zu):\n", m->rows, m->cols);
 
-    for (size_t i = 0; i < m -> rows; i++)
-    {
-        for (size_t j = 0; j < m -> cols; j++)
+    for (size_t i = 0; i < m->rows; i++) {
+        for (size_t j = 0; j < m->cols; j++) 
         {
-            if (m -> type -> size == sizeof(int))
+            if (m->type->size == sizeof(int)) 
             {
                 int value;
                 scanf("%d", &value);
                 *(int*)matrix_at(m, i, j) = value;
-            }
-            else
+            } 
+            else 
             {
                 double value;
                 scanf("%lf", &value);
@@ -34,28 +33,21 @@ static Matrix* create_and_fill()
     int type_choice;
     size_t rows, cols;
 
-    printf("ТИП МАТРИЦЫ (1 - int, 2 - double): ");
+    printf("ТИП (1-int, 2-double): ");
     if (scanf("%d", &type_choice) != 1) return NULL;
 
-    printf("ВВЕДИТЕ КОЛИЧЕСТВО СТРОК И СТОЛБЦОВ: ");
+    printf("СТРОКИ И СТОЛБЦЫ: ");
     if (scanf("%zu %zu", &rows, &cols) != 2) return NULL;
 
     FieldInfo* type = NULL;
 
     if (type_choice == 1) type = get_int_field_info();
     else if (type_choice == 2) type = get_double_field_info();
-    else
-    {
-        printf("ВЫБРАН НЕВЕРНЫЙ ТИП\n");
-        return NULL;
-    }
+    else return NULL;
 
     Matrix* m = create_matrix(rows, cols, type);
-    if (!m)
-    {
-        printf("Ошибка при создании матрицы\n");
-        return NULL;
-    }
+    if (!m) return NULL;
+
     fill_matrix(m);
     return m;
 }
@@ -70,16 +62,15 @@ int main()
 
     while (running)
     {
-        printf("____МЕНЮ____\n");
-        printf("1. СОЗДАТЬ МАТРИЦУ A\n");
-        printf("2. СОЗДАТЬ МАТРИЦУ B\n");
+        printf("\n1. Создать A\n");
+        printf("2. Создать B\n");
         printf("3. A + B\n");
         printf("4. A * B\n");
-        printf("5. ТРАНСПОНИРОВАТЬ МАТРИЦУ A\n");
-        printf("6. НАЙТИ ЛИНЕЙНУЮ КОМБИНАЦИЮ ДВУХ СТРОК (A)\n");
-        printf("7. ВЫВЕСТИ МАТРИЦУ A\n");
-        printf("8. ЗАКОНЧИТЬ\n");
-        printf("ВАШ ВЫБОР:\n");
+        printf("5. Транспонировать A\n");
+        printf("6. Прибавление линейной комбинации к строке A\n");
+        printf("7. Вывести A\n");
+        printf("8. Выход\n");
+        printf("Ваш выбор: ");
 
         int choice;
         if (scanf("%d", &choice) != 1) break;
@@ -97,101 +88,66 @@ int main()
                 break;
 
             case 3:
-                if (!A || !B)
+                if (A && B)
                 {
-                    printf("МАТРИЦЫ НЕ СОЗДАНЫ\n");
-                    break;
-                }
-
-                if (A -> type != B -> type)
-                {
-                    printf("ТИПЫ МАТРИЦ НЕ СОВПАДАЮТ\n");
-                    break;
-                }
-            
-                if (C) destroy_matrix(C);
-                C = matrix_add(A,B);
-
-                if(!C) printf("НЕЛЬЗЯ ВЫПОЛНИТЬ СЛОЖЕНИЕ\n");
-                else
-                {
-                    printf("RESULT: \n");
-                    matrix_print(C);
+                    if (C) destroy_matrix(C);
+                    C = matrix_add(A, B);
+                    if (C) matrix_print(C);
                 }
                 break;
 
             case 4:
-                if (!A || !B)
+                if (A && B)
                 {
-                    printf("МАТРИЦЫ НЕ СОЗДАНЫ\n");
-                    break;
-                }
-
-                if (A -> type != B -> type)
-                {
-                    printf("ТИПЫ МАТРИЦ НЕ СОВПАДАЮТ\n");
-                    break;
-                }
-            
-                if (C) destroy_matrix(C);
-                C = matrix_mul(A,B);
-
-                if(!C) printf("НЕЛЬЗЯ ВЫПОЛНИТЬ УМНОЖЕНИЕ\n");
-                else
-                {
-                    printf("RESULT: \n");
-                    matrix_print(C);
+                    if (C) destroy_matrix(C);
+                    C = matrix_mul(A, B);
+                    if (C) matrix_print(C);
                 }
                 break;
 
             case 5:
-                if (!A)
-                {
-                    printf("МАТРИЦА А НЕ СОЗДАНА\n");
-                    break;
-                }
-
+                if (A)
                 {
                     Matrix* T = matrix_transpose(A);
                     destroy_matrix(A);
                     A = T;
-
-                    printf("ТРАНСПОНИРОВАННАЯ МАТРИЦА А: \n");
                     matrix_print(A);
                 }
                 break;
 
             case 6:
-                if(!A)
+                if (A)
                 {
-                    printf("МАТРИЦА А НЕ СОЗДАНА\n");
-                    break;
-                }
+                    size_t target;
+                    size_t count;
 
-                {
-                    size_t target, r1, r2;
-                    double k1, k2;
+                    printf("Целевая строка (начиная с нуля): ");
+                    scanf("%zu", &target);
 
-                    printf("ВВЕДИТЕ СТРОКУ:\n");
-                    scanf("%zu %zu %lf %zu %lf", &target, &r1, &k1, &r2, &k2);
+                    printf("Сколько строк в линейной комбинации? ");
+                    scanf("%zu", &count);
 
-                    printf("РЕЗУЛЬТАТ: \n");
-                    matrix_row_combination(A, target, r1, k1, r2, k2);
+                    size_t rows[count];
+                    double coeffs[count];
+
+                    for (size_t i = 0; i < count; i++)
+                    {
+                        printf("Строка[%zu], Коэффициент[%zu]: ", i, i);
+                        scanf("%zu %lf", &rows[i], &coeffs[i]);
+                    }
+    
+                    matrix_row_add_combination(A, target, rows, coeffs, count);
                     matrix_print(A);
                 }
                 break;
 
             case 7:
-                    if (A) matrix_print(A);
-                    else printf("МАТРИЦА А НЕ СОЗДАНА\n");
-                    break;
+                if (A) matrix_print(A);
+                break;
 
-                case 8:
-                    running = 0;
-                    break;
-
-                default:
-                    printf("Неверно выбран номер\n");        
+            case 8:
+                running = 0;
+                break;
         }
     }
 
@@ -201,8 +157,4 @@ int main()
 
     return 0;
 }
-
-
-*cd "/Users/p-smirnova06/Desktop/МИФИ/project /лаб 1"  gcc -std=c99 -Wall -Wextra Main.c Matrix.c Int_field.c double_field.c -o app*
-./app *
 
