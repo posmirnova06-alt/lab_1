@@ -19,4 +19,3 @@ FieldInfo* get_int_field_info();
 FieldInfo* get_double_field_info();
 
 #endif 
-

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 static FieldInfo *DOUBLE_FIELD_INFO = NULL;
 
 static void double_add(const void* a, const void* b, void* result)
@@ -22,6 +23,11 @@ static void double_print(const void* a)
 static void double_zero(void* a)
 {
     *(double*)a = 0.0;
+}
+
+static void double_copy(const void* source, void* destination)
+{
+    *(int*)destination = *(const double*)source;
 }
 
 FieldInfo* get_double_field_info() 

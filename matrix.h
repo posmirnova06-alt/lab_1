@@ -23,8 +23,6 @@ void matrix_print(const Matrix* m);
 Matrix* matrix_add(const Matrix* a, const Matrix* b);
 Matrix* matrix_mul(const Matrix* a, const Matrix* b);
 Matrix* matrix_transpose(const Matrix* m);
-void matrix_row_combination(Matrix* m, size_t target, size_t row1, double k1, size_t row2, double k2);
+void matrix_row_add_combination(Matrix* m, size_t target, const size_t* rows, const double* coeffs, size_t count);
 
 #endif 
-
-

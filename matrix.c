@@ -130,38 +130,35 @@ Matrix* matrix_transpose(const Matrix* m)
     return r;
 }
 
-void matrix_row_combination(Matrix* m, size_t target, size_t row1, double k1, size_t row2, double k2)
+void matrix_row_add_combination(Matrix* m, size_t target, const size_t* rows , const double* coeffs, size_t count)
 {
-    if (!m || target >= m -> rows || row1 >= m -> rows || row2 >= m -> rows) return;
+    if (!m || !rows || !coeffs) return;
+    if (target >= m->rows) return;
 
-    FieldInfo* t = m -> type;
+    FieldInfo* t = m->type;
+    if (!t) return;
 
-    for (size_t j = 0; j < m -> cols; j++)
+    for (size_t j = 0; j < m->cols; j++)
     {
-        void* dest = matrix_at(m, target, j);
+        void* destination = matrix_at(m, target, j);
 
-        char temp1[t -> size];
-        char temp2[t -> size];
-        char res1[t -> size];
-        char res2[t -> size];
-
-        if (t->size == sizeof(int))
+        for (size_t i = 0; i < count; i++)
         {
-            *(int*)temp1 = k1;
-            *(int*)temp2 = k2;
-        }
-        else
-        {
-            *(double*)temp1 = k1;
-            *(double*)temp2 = k2;
-        }
+            if (rows[i] >= m->rows) continue;
+            if (rows[i]==target) continue;
 
-        t -> mul(matrix_at_const(m, row1, j), temp1, res1);
-        t -> mul(matrix_at_const(m, row2, j), temp2, res2);
+            const void* source = matrix_at_const(m, rows[i], j);
 
-        t -> zero(dest);
-        t -> add(dest, res1, dest);
-        t -> add(dest, res2, dest);
+            char coeff_buf[t->size];
+            char temp[t->size];
+
+            if (t->size == sizeof(int)) 
+                *(int*)coeff_buf = (int)coeffs[i];
+            else    
+                *(double*)coeff_buf = (double)coeffs[i];
+            
+            t->mul(source, coeff_buf,temp);
+            t->add(destination, temp, destination);
+        }
     }
 }
-

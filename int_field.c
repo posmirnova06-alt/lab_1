@@ -24,7 +24,12 @@ static void int_zero(void* a)
     *(int*)a = 0;
 }
 
-FieldInfo* get_int_field_info()
+static void int_copy(const void* source, void* destination)
+{
+    *(int*)destination = *(const int*)source;
+}
+
+FieldInfo* get_int_field_info() 
 {
     if(!INT_FIELD_INFO)
     {
@@ -33,8 +38,8 @@ FieldInfo* get_int_field_info()
         INT_FIELD_INFO->add = int_add;
         INT_FIELD_INFO->mul = int_mul;
         INT_FIELD_INFO->print = int_print;
-        INT_FIELD_INFO->zero =int_zero;
+        INT_FIELD_INFO->zero = int_zero;
+        INT_FIELD_INFO->copy = int_copy;
     }
     return INT_FIELD_INFO;
 }
-
